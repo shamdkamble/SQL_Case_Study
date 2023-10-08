@@ -3,7 +3,7 @@ SELECT SUM(oi.quantity * p.price) AS TotalRevenue
 FROM orders o
 JOIN order_items oi ON o.order_id = oi.order_id
 JOIN products p ON oi.product_id = p.product_id
-WHERE o.order_date >= DATEADD(QUARTER, -1, GETDATE());
+WHERE o.order_date >= DATE_SUB(NOW(), INTERVAL 3 MONTH);
 
 -- Task 2: Identify top 5 selling products by quantity sold
 SELECT TOP 5 p.product_name, SUM(oi.quantity) AS TotalQuantitySold
