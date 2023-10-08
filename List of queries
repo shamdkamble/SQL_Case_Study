@@ -1,0 +1,37 @@
+-- Task 1: Calculate total revenue in the last quarter
+SELECT SUM(oi.quantity * p.price) AS TotalRevenue
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+WHERE o.order_date >= DATEADD(QUARTER, -1, GETDATE());
+
+-- Task 2: Identify top 5 selling products by quantity sold
+SELECT TOP 5 p.product_name, SUM(oi.quantity) AS TotalQuantitySold
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_name
+ORDER BY TotalQuantitySold DESC;
+
+-- Task 3: Determine customer with the highest total purchase amount
+SELECT c.customer_name, SUM(oi.quantity * p.price) AS TotalPurchaseAmount
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY c.customer_name
+ORDER BY TotalPurchaseAmount DESC
+LIMIT 1;
+
+-- Task 4: Calculate average order value for each month
+SELECT DATEPART(MONTH, o.order_date) AS Month, AVG(oi.quantity * p.price) AS AvgOrderValue
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY DATEPART(MONTH, o.order_date);
+
+-- Task 6: Identify products with low sales
+SELECT p.product_name, SUM(oi.quantity) AS TotalQuantitySold
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_name
+HAVING SUM(oi.quantity) < 10;
